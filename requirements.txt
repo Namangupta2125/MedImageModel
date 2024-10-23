@@ -24,3 +24,4 @@ charset-normalizer>=2.0.0
 idna>=3.3
 rsa>=4.7.0
 cachetools>=4.2.0
+gunicorn>=20.1.0  # WSGI server for running Flask in production
