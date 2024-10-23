@@ -14,10 +14,12 @@ from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import pandas as pd
 from fuzzywuzzy import process
 
+app = None
 # Global variables to store the ICD data
 disease_icd_dict = None
 
 def create_app():
+    global app
     app = Flask(__name__)
     CORS(app)
 
@@ -33,6 +35,7 @@ def create_app():
     with app.app_context():
         initialize_data(app)
 
+    register_routes(app)
     return app
 
 def initialize_data(app):
@@ -312,7 +315,6 @@ def register_routes(app):
             current_app.logger.error(f"Error during image processing: {str(e)}")
             return jsonify({'error': str(e)}), 500
 
+ app = create_app()
 if __name__ == '__main__':
-    app = create_app()
-    register_routes(app)
     app.run(debug=True, use_reloader=False, port=5000)
