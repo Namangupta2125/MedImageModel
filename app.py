@@ -315,6 +315,6 @@ def register_routes(app):
             current_app.logger.error(f"Error during image processing: {str(e)}")
             return jsonify({'error': str(e)}), 500
 
- app = create_app()
+app = create_app()
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False, port=5000)
