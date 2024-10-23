@@ -22,11 +22,12 @@ def create_app():
     CORS(app)
 
     # Configuration with your specified paths
-    app.config['JSON_FILE_PATH'] = r"C:\Users\HP\Desktop\output (1).json"
-    app.config['EXCEL_FILE_PATH'] = r"C:\Users\HP\Desktop\test.xlsx"
-    app.config['ICD_CODE_JSON_PATH'] = r"C:\Users\HP\Downloads\icd_codes.json"
+    app.config['JSON_FILE_PATH'] = "./output (1).json"
+    app.config['EXCEL_FILE_PATH'] = "./test.xlsx"
+    app.config['ICD_CODE_JSON_PATH'] = "./icd_codes.json"
     app.config['API_KEY'] = "AIzaSyCQrYGVRTNivr4Dh_xhJLkVovy6kDEFhKY"
-    app.config['ICD_CODE_PATH'] = r"C:\Users\HP\Desktop\ICD.xlsx"
+    app.config['ICD_CODE_PATH'] = "./ICD.xlsx"
+
 
     # Initialize ICD codes
     with app.app_context():
