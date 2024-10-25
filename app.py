@@ -163,51 +163,98 @@ def analyze_document_from_base64(base64_string: str) -> Dict[str, Any]:
         image_part = {"mime_type": "image/jpeg", "data": base64.b64encode(image_data).decode('utf-8')}
 
         prompt_template = """
-        Analyze this image and extract all visible text and information. 
-        Also then according to values present in the document analyze if provided details 
-        conflict/be incongruous/incongruous each other return boolean true or false accordingly in forged field.
-        default value of forged is false 
-        also provide the reason in reason section for both. 
-        Return it in the following JSON format:
-        
-        {
-            "Treating_Doctor_Name": "",
-            "Treating_Doctor_Contact_Number": "",
-            "Nature_Of_Illness_Disease": "",
-            "Nature_Of_Illness_Presenting_Complaint": "",
-            "Relevant_Critical_Findings": "",
-            "Duration_Of_Present_Ailment_Days": "",
-            "Date_Of_First_Consultation": "",
-            "Past_History_Of_Present_Ailment": "",
-            "Provisional_Diagnosis": "",
-            "Provisional_Diagnosis_ICD10_Code": "",
-            "Medical_Management": false,
-            "Surgical_Management": false,
-            "Intensive_Care": false,
-            "Investigation": false,
-            "Non_Allopathic_Treatment": false,
-            "Route_Of_Drug_Administration": "",
-            "Surgical_Details_Name_Of_Surgery": "",
-            "Surgical_Details_ICD10_PCS_Code": "",
-            "Other_Treatment_Details": "",
-            "How_Did_Injury_Occur": "",
-            "Is_RTA": false,
-            "Date_Of_Injury": "",
-            "Report_To_Police": false,
-            "FIR_No": "",
-            "Substance_Abuse": false,
-            "Test_Conducted": false,
-            "Test_Conducted_Report_Attached": false,
-            "Maternity_G": false,
-            "Maternity_P": false,
-            "Maternity_L": false,
-            "Maternity_A": false,
-            "Expected_Date_Of_Delivery": "",
-            "Forged": false,
-            "Reason": "",
-            "Additional_Information": {}
-        }
-        """
+    Analyze this document image thoroughly. Extract and categorize information based on the following criteria:
+
+    1. **Text Analysis**:
+       - Identify all text in the image.
+       - Detect any underlined text and specify which words/phrases are underlined.
+       - Identify segmented text (text split into separate boxes or sections).
+       - Detect if any text is cut off or partially visible.
+       - Identify any crossed-out or strikethrough text.
+
+    2. **Symbol Detection**:
+       - Detect the presence of checkboxes and whether they are checked or unchecked.
+       - Identify any stars (★) or asterisks (*) near text and specify their location (before or after the text).
+
+    3. **Shape Analysis**:
+       - Identify any shapes present in the document (circles, squares, triangles, etc.).
+       - Describe the relationship between shapes and nearby text.
+
+    4. **Medication Information (if applicable)**:
+       - Extract all mentions of medications (e.g., med1, med2, med3, med4).
+       - For each medication, provide details and any associated shapes or symbols.
+
+    5. **Form Structure**:
+       - Identify form fields, labels, and their corresponding values.
+       - Detect any tables and describe their content.
+
+    6. **Special Cases**:
+       - Note any handwritten text and its location.
+       - Identify any logos, stamps, or signatures.
+       - Detect any QR codes or barcodes.
+
+    7. **Image Quality Assessment**:
+       - Evaluate the overall image quality (e.g., clear, blurry, skewed).
+       - Note any issues like poor contrast, shadows, or reflections.
+
+    8. **Provisional Diagnosis and Abbreviation Handling**:
+       - Capture all unique values under "Provisional Diagnosis," using "||" to separate only unique entries. Avoid duplicating values.
+       - Distinguish between disease names and medication names:
+           - Place disease names under the "Provisional Diagnosis" field.
+           - Include medication names in the "remark" section.
+       - For abbreviations in "Provisional Diagnosis":
+           - Treat abbreviations as case-insensitive and replace them with full forms based on context.
+           - Preserve surrounding text format when replacing abbreviations.
+           - Note ambiguous abbreviations in the "remark" section.
+
+    9. **Forged Check and Conflict Detection**:
+       - Detect if any values conflict, are incongruous, or appear to be forged. Set the "Forged" field to true if such conflicts are found, and provide reasoning in the "Reason" section.
+
+    Return the results in the following JSON format, with populated keys at the top of the JSON structure. If any information doesn’t fit the predefined format, summarize it concisely in the "remark" section.
+
+    ```json
+    {
+        "Treating_Doctor_Name": "",
+        "Treating_Doctor_Contact_Number": "",
+        "Nature_Of_Illness_Disease": "",
+        "Nature_Of_Illness_Presenting_Complaint": "",
+        "Relevant_Critical_Findings": "",
+        "Duration_Of_Present_Ailment_Days": "",
+        "Date_Of_First_Consultation": "",
+        "Past_History_Of_Present_Ailment": "",
+        "Provisional_Diagnosis": "",
+        "Provisional_Diagnosis_ICD10_Code": "",
+        "Medical_Management": false,
+        "Surgical_Management": false,
+        "Intensive_Care": false,
+        "Investigation": false,
+        "Non_Allopathic_Treatment": false,
+        "Route_Of_Drug_Administration": "",
+        "Surgical_Details_Name_Of_Surgery": "",
+        "Surgical_Details_ICD10_PCS_Code": "",
+        "Other_Treatment_Details": "",
+        "How_Did_Injury_Occur": "",
+        "Is_RTA": false,
+        "Date_Of_Injury": "",
+        "Report_To_Police": false,
+        "FIR_No": "",
+        "Substance_Abuse": false,
+        "Test_Conducted": false,
+        "Test_Conducted_Report_Attached": false,
+        "Maternity_G": false,
+        "Maternity_P": false,
+        "Maternity_L": false,
+        "Maternity_A": false,
+        "Expected_Date_Of_Delivery": "",
+        "Forged": false,
+        "Reason": "",
+        "Additional_Information": {},
+        "remark": ""
+    }
+    ```
+
+    Ensure that fields with actual values appear at the top of the JSON output. Leave any non-applicable sections as empty strings, lists, or `false` as appropriate.
+"""
 
         prompt_parts = [prompt_template, image_part]
 
