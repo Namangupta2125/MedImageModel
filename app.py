@@ -211,7 +211,7 @@ def analyze_document_from_base64(base64_string: str) -> Dict[str, Any]:
        - Detect if any values conflict, are incongruous, or appear to be forged. Set the "Forged" field to true if such conflicts are found, and provide reasoning in the "Reason" section.
 
     Return the results in the following JSON format, with populated keys at the top of the JSON structure. If any information doesn’t fit the predefined format, summarize it concisely in the "remark" section.
-
+    If a document have Medicine Name or something like prescription write it in "Medicine_Recommended" sections.
     ```json
     {
         "Treating_Doctor_Name": "",
@@ -224,6 +224,7 @@ def analyze_document_from_base64(base64_string: str) -> Dict[str, Any]:
         "Past_History_Of_Present_Ailment": "",
         "Provisional_Diagnosis": "",
         "Provisional_Diagnosis_ICD10_Code": "",
+        "Medicine_Recommended" : {},
         "Medical_Management": false,
         "Surgical_Management": false,
         "Intensive_Care": false,
@@ -249,7 +250,7 @@ def analyze_document_from_base64(base64_string: str) -> Dict[str, Any]:
         "Forged": false,
         "Reason": "",
         "Additional_Information": {},
-        "remark": ""
+        "Remark": ""
     }
     ```
 
