@@ -27,7 +27,7 @@ def create_app():
     app.config['JSON_FILE_PATH'] = "./output (1).json"
     app.config['EXCEL_FILE_PATH'] = "./test.xlsx"
     app.config['ICD_CODE_JSON_PATH'] = "./icd_codes.json"
-    app.config['API_KEY'] = "AIzaSyAX-y96BKUrKQPmcM6D8c-RjxlonsPltv8"
+    app.config['API_KEY'] = "AIzaSyAeLhT2j6ucPaE41P2ejgiMb2OVmKRoJKA"
     app.config['ICD_CODE_PATH'] = "./ICD.xlsx"
 
 
